@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 4b - Q2: Retrieve and Display JSON Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    #errorMessage {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Question 2: Book List from JSON</h2>
+
+  <p><strong>(a) Title of the first book:</strong> <span id="firstBookTitle"></span></p>
+  <p><strong>(b) Author of the second book:</strong> <span id="secondBookAuthor"></span></p>
+
+  <p><strong>(c) Genres by book title:</strong></p>
+  <ul id="genreList"></ul>
+
+  <p id="errorMessage" role="alert"></p>
+
+  <script>
+    async function loadBooks() {
+      try {
+        const response = await fetch("books.json");
+        if (!response.ok) {
+          throw new Error("HTTP status " + response.status);
+        }
+
+        const data = await response.json();
+        console.log("JSON parsed successfully:", data);
+
+        document.getElementById("firstBookTitle").textContent = data.books[0].title;
+        document.getElementById("secondBookAuthor").textContent = data.books[1].author;
+
+        const genreList = document.getElementById("genreList");
+        data.books.forEach(function (book) {
+          const li = document.createElement("li");
+          li.textContent = book.title + " — " + book.genres.join(", ");
+          genreList.appendChild(li);
+        });
+      } catch (error) {
+        document.getElementById("errorMessage").textContent =
+          "Unable to load book data. Please make sure books.json is valid and opened through a local server.";
+      }
+    }
+
+    loadBooks();
+  </script>
+</body>
+</html>
